@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-basic-scr/geektime/week02/webook/internal/domain"
 	"go-basic-scr/geektime/week02/webook/internal/repository/dao"
+	"time"
 )
 
 var (
@@ -37,6 +38,35 @@ func (repo *UserRepository) toDomain(u dao.User) domain.User {
 		Id:       u.Id,
 		Email:    u.Email,
 		Password: u.Password,
+		Nickname: u.Nickname,
+		AboutMe:  u.AboutMe,
+		Birthday: time.UnixMilli(u.Birthday),
 	}
 
+}
+
+func (repo *UserRepository) UpdateNonZeroFields(ctx context.Context, user domain.User) error {
+	userDao := repo.toEntity(user)
+	err := repo.dao.UpdateById(ctx, userDao)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *UserRepository) toEntity(user domain.User) dao.User {
+	return dao.User{
+		Id:       user.Id,
+		Nickname: user.Nickname,
+		Birthday: user.Birthday.UnixMilli(),
+		AboutMe:  user.AboutMe,
+	}
+}
+
+func (repo *UserRepository) FindById(ctx context.Context, uid int64) (domain.User, error) {
+	user, err := repo.dao.FindById(ctx, uid)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return repo.toDomain(user), nil
 }

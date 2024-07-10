@@ -47,3 +47,17 @@ func (svc *UserService) Login(ctx context.Context, email string, password string
 	return u, nil
 
 }
+
+func (svc *UserService) UpdateNonZeroFields(ctx context.Context, user domain.User) error {
+	// todo
+	return svc.repo.UpdateNonZeroFields(ctx, user)
+
+}
+
+func (svc *UserService) FindById(ctx context.Context, uid int64) (domain.User, error) {
+	u, err := svc.repo.FindById(ctx, uid)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return u, err
+}

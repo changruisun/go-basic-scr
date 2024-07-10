@@ -1,0 +1,29 @@
+### login
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+  "email" : "123@qq.com",
+  "password": "abcd#1234"
+}
+
+### Edit
+# @no-cookie-jar
+POST http://localhost:8080/users/edit
+Content-Type: application/json
+Cookie: ssid=MTcyMDYwMjk2N3xEdi1CQkFFQ180SUFBUkFCRUFBQUhfLUNBQUVHYzNSeWFXNW5EQWdBQm5WelpYSkpaQVZwYm5RMk5BUUNBQTQ9fPnFFe1s4Y7RjvZ6oMIAkuwFvvmPYdXL97V4W_-R4Ifg; Expires=Wed, 10 Jul 2024 09:31:07 GMT; Max-Age=900
+
+
+{
+  "nickname" : "aabbcc",
+  "birthday": "2012-01-01",
+  "aboutMe": "desc null"
+}
+
+
+### profile
+# @no-cookie-jar
+POST http://localhost:8080/users/profile
+Content-Type: application/json
+Cookie: ssid=MTcyMDYwMjk2N3xEdi1CQkFFQ180SUFBUkFCRUFBQUhfLUNBQUVHYzNSeWFXNW5EQWdBQm5WelpYSkpaQVZwYm5RMk5BUUNBQTQ9fPnFFe1s4Y7RjvZ6oMIAkuwFvvmPYdXL97V4W_-R4Ifg; Expires=Wed, 10 Jul 2024 09:31:07 GMT; Max-Age=900
+

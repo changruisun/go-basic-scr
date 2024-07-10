@@ -7,6 +7,7 @@ import (
 	"go-basic-scr/geektime/week02/webook/internal/domain"
 	"go-basic-scr/geektime/week02/webook/internal/service"
 	"net/http"
+	"time"
 )
 
 type UserHandler struct {
@@ -118,9 +119,64 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 }
 
 func (h *UserHandler) Edit(ctx *gin.Context) {
+	sess := sessions.Default(ctx)
+	idVal := sess.Get("userId")
+	userId, ok := idVal.(int64)
+	if !ok {
+		ctx.String(http.StatusOK, "系统错误")
+		return
+	}
+	type Req struct {
+		Nickname string `json:"nickname"`
+		Birthday string `json:"birthday"`
+		AboutMe  string `json:"aboutMe"`
+	}
+	var req Req
+	if err := ctx.Bind(&req); err != nil {
+		return
+	}
 
+	birthday, err := time.Parse(time.DateOnly, req.Birthday)
+	if err != nil {
+		ctx.String(http.StatusOK, "生日格式不对")
+		return
+	}
+	user := domain.User{
+		Id:       userId,
+		Nickname: req.Nickname,
+		Birthday: birthday,
+		AboutMe:  req.AboutMe,
+	}
+
+	err = h.srv.UpdateNonZeroFields(ctx, user)
+	switch err {
+	case nil:
+		ctx.String(http.StatusOK, "编辑成功")
+	default:
+		ctx.String(http.StatusOK, "系统错误")
+	}
 }
 
 func (h *UserHandler) Profile(ctx *gin.Context) {
+	//idVal, _ := ctx.Get("userId")
+	sess := sessions.Default(ctx)
+	idVal := sess.Get("userId")
+	userId, ok := idVal.(int64)
+	if !ok {
+		ctx.String(http.StatusOK, "系统错误")
+		return
+	}
+	u, err := h.srv.FindById(ctx, userId)
+
+	if err != nil {
+		ctx.String(http.StatusOK, "系统错误")
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]any{
+		"email":    u.Email,
+		"nickname": u.Nickname,
+		"birthday": u.Birthday.Format(time.DateOnly),
+		"about-me": u.AboutMe,
+	})
 
 }
